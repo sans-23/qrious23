@@ -24,7 +24,7 @@
     <div id="myLinks">
       <a href="https://portfolio-sans-23.netlify.app/" target="_blank" style="width:32%" class="w3-button">Discover</a>
       <a href="https://portfolio-sans-23.netlify.app/memory-game" target="_blank" style="width:31%" class="w3-button">Games</a>
-      <a href="{% url 'accounts:auth' %}" style="width:32%" class="w3-button">Logout</a>
+      <a href="{% url 'accounts:auth' %}" style="width:32%" class="w3-button">{% if user.is_authenticated %}Logout{% else %}Login{% endif %}</a>
     </div>
     <div class="wrapper w3-padding-64">
       <div class="authentication" id="auth">
