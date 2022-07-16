@@ -8,7 +8,7 @@
     <h2 class="w3-text-light-grey w3-round w3-center">{{quiz}}</h3>
     {% csrf_token %}
     {{ form.as_p }}
-    <input class="w3-button w3-round w3-left w3-section w3-deep-orange w3-padding" type="submit" onclick=window.location="{% url 'quiz:quiz_list' %}" ; return false; value="Cancel">
+    <input class="w3-button w3-round w3-left w3-section w3-deep-orange w3-padding" type="submit" onclick=window.location="{% url 'home' %}" ; return false; value="Cancel">
     <input class="w3-button w3-round w3-right w3-section w3-blue w3-padding" type="submit" value="Create">
   </form>
 </div>
