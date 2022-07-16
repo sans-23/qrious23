@@ -3,7 +3,7 @@ import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-kk*lodsfg0nqb91@tna1@r)jms!!lc(cr++u#wrf4@+i$dt&r_'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['*', '.herokuapp.com']
 
 INSTALLED_APPS = [

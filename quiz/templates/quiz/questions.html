@@ -2,194 +2,193 @@
 {% block title %} Dashboard | {{quiz.author}} {% endblock %}
 {% block content %}
 {% load static %}
-<script src="{% static 'js/form.js' %}"></script>
 {% if quiz.author == request.user %}
-      <script>
-        $(document).ready(function(){
-          $('#post-form').on('submit', function(event){
-              event.preventDefault();
-              console.log("form submitted!")
-              create_question();
-          });
-          });
-          function create_question() {
-          console.log("create post is working!")
-          $.ajax({
-              url : "/create_question",
-              type : "POST",
-              data : { 
-                  question : $('#question').val(), 
-                  a : $('#a').val(), 
-                  b : $('#b').val(), 
-                  c : $('#c').val(), 
-                  d : $('#d').val(), 
-                  answer : $('#answer').val(),
-                  mark : $('#mark').val(), 
-                  neg : $('#neg').val(),
-                  slug : "{{slug}}",
-              },
-              success : function(json) {
-                  $('#question').val('');
-                  $('#a').val('');
-                  $('#b').val('');
-                  $('#c').val('');
-                  $('#d').val('');
-                  $('#answer').val('');
-                  $('#mark').val('');
-                  $('#neg').val('');
-                  $('#ques_cnt').html(parseInt($('#ques_cnt').html())+1);
-                  console.log(json.question);
-                  console.log("success");
-                  $("#ques_list").prepend(new_ques(json));
-                  $('#results').html("<div class='w3-border w3-round w3-margin w3-padding w3-text-green'>"+json.status);
-              },
-              error : function(xhr,errmsg,err) {
-                  $('#results').html("<div class='w3-border w3-round w3-margin w3-padding w3-text-red'>Oops! We have encountered an error: "+errmsg);
-                  console.log(xhr.status + ": " + xhr.responseText);
-              }
-          });
-          };
-          function new_ques(json){
-            var question_box = "<div "+ "class='w3-container w3-round-large w3-border w3-text-white'" + ">" + "<p>Q. " + json['question'] + "</p><hr>" + "<div ";
-              if(json['answer'] == json['a']) question_box += "class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
-              question_box+=" >A." + json['a'] + "</div>" + "<div ";
-              if(json['answer'] == json['b']) question_box+="class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
-              question_box+= " >B." + json['b'] + "</div>"+"<div ";
-              if(json['answer'] == json['c']) question_box+="class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
-              question_box += " >C." + json['c'] + "</div>" + "<div ";
-              if(json['answer'] == json['d']) question_box+="class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
-              question_box+= " >D." + json['d'] + "</div>" + "<br>"+ "<strong><a class='w3-text-green w3-left' href= " + "#" + ">Edit</a></strong>" + "<strong><a class='w3-text-deep-orange w3-right' href=" + "#" + ">Delete</a></strong> </div><br>"
-            return question_box;
-          }
-          $(function() {
-            function getCookie(name) {
-                var cookieValue = null;
-                if (document.cookie && document.cookie != '') {
-                    var cookies = document.cookie.split(';');
-                    for (var i = 0; i < cookies.length; i++) {
-                        var cookie = jQuery.trim(cookies[i]);
-                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-            var csrftoken = getCookie('csrftoken');
-        
-            function csrfSafeMethod(method) {
-                return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-            }
-            function sameOrigin(url) {
-                var host = document.location.host; // host + port
-                var protocol = document.location.protocol;
-                var sr_origin = '//' + host;
-                var origin = protocol + sr_origin;
-                return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-                    !(/^(\/\/|http:|https:).*/.test(url));
-            }
-        
-            $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
-                    if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            });
-        });
-        function showAddQuestionBox(){
-          $('#post-form').toggle();
-          $('#addQuestionBtn').toggle();
-          $('#cancelQuestionBtn').toggle();
-        }
-      </script>
-      <div class="w3-container w3-padding-48 w3-half">
-        <div class="w3-center">
-        <img class="w3-padding w3-centered" style="width: 80%;" src="https://cdn.pixabay.com/photo/2016/05/30/14/46/man-1424877_960_720.png">
-        </div>
-          <p>Total Questions : <span id="ques_cnt">{{quiz.question_set.count}}<span></p>
-
-          {% if quiz.question_set.count >= 50 %}
-          <p class="w3-red"><span>MAX QUES LIMIT</span></p>
-          {% else %}
-          <a id="addQuestionBtn" onclick="showAddQuestionBox()" class="w3-button w3-round-large w3-blue w3-bar w3-margin-bottom" href="javascript:void(0);">Add Question</a>
-          <a id="cancelQuestionBtn" onclick="showAddQuestionBox()" class="w3-button w3-round-large w3-red w3-bar w3-margin-bottom" href="javascript:void(0);" style="display:none">Cancel</a>
-          <form autocomplete="off" style="display:none" class="w3-container w3-round-large w3-border w3-margin-bottom w3-padding" method="POST" id="post-form">
-            {% csrf_token %}
-            <input required type="text" class="w3-input w3-round" id="question" placeholder="Question"></input>
-            <input required type="text" class="w3-input w3-round" id="a" placeholder="A"></input>
-            <input required type="text" class="w3-input w3-round" id="b" placeholder="B"></input>
-            <input required type="text" class="w3-input w3-round" id="c" placeholder="C"></input>
-            <input required type="text" class="w3-input w3-round" id="d" placeholder="D"></input>
-            <input required type="text" class="w3-input w3-round" id="answer" placeholder="Answer"></input>
-            <input required type="number" class="w3-input w3-round w3-half" id="mark" placeholder="marks"></input>
-            <input required type="number" class="w3-input w3-round w3-half" id="neg" placeholder="negative"></input>
-            <input class="w3-button w3-round w3-right w3-section w3-blue w3-padding" type="submit" value="Create">
-          </form>
-          <div id="results"></div>
-          {% endif %}
-          
-        <div id="ques_list"></div>
-          {% for question in questions %}
-          <div class="w3-container w3-round-large w3-border w3-text-white">
-            <p>Q.  {{question.question}}</p>
-            <hr>
-            <div {% if question.answer == question.option1%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>A. {{question.option1}}</div>
-            <div {% if question.answer == question.option2%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>B. {{question.option2}}</div>
-            <div {% if question.answer == question.option3%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>C. {{question.option3}}</div>
-            <div {% if question.answer == question.option4%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>D. {{question.option4}}</div>
-            <br>
-            <strong><a class="w3-text-green w3-left" href="{% url 'quiz:question_update' question.id %}">Edit</a></strong>
-            <strong><a class="w3-text-deep-orange w3-right" href="{% url 'quiz:question_delete' question.id %}">Delete</a></strong>
-          </div>
-          <br>
-          {% endfor %}
-          <br>
-        <input class="w3-input w3-round" type="text" value="qrious23.herokuapp.com{% url 'quiz:exam' slug=slug %}" id="myInput">
-      <div class="tooltip">
-      <button class="w3-button w3-blue w3-round w3-right" onclick="copy()" onmouseout="outFunc()">
-        <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
-        Copy text
-        </button>
-      </div>
-      </div>
-
-      <div class="w3-container w3-center w3-padding-48 w3-half">
-        <div class="leaderboard" style="display:flex; align-items:center; justify-content:start">
-          <img class="w3-padding" style="width: 25%;" src="https://cdn.pixabay.com/photo/2022/06/10/11/54/win-7254378__340.png" alt="">
-          <p style="font-size:1.8em">Leaderboard</p>
-        </div>
-        <table>
-          <tr>
-            <th>PARTICIPANT</th>
-            <th>SCORE</th>
-            <th>RESPONSE</th>
-          </tr>
-          {% for report in reports %}
-          <tr>
-            <td>{{report.student}} <span class="w3-badge w3-white">{{report.attempt}}</span></td>
-            <td>{{report.score}}</td>
-            <td><a href="{% url 'quiz:responses' slug=slug userid=report.student.id %}">Response </a></td>
-          </tr>
-          {% endfor %}
-        </table>
-
-        <img class="w3-margin" style="width: 60%;" src="https://cdn.pixabay.com/photo/2016/06/13/15/07/presentation-1454403__340.png" alt="">
-
-        <table>
-          <tr><th>MY QUIZ</th><th>RESULT</th></tr>
-          {% for quiz in my_quizes %}
-          <tr>
-            <td><a href="{% url 'quiz:question_list' slug=quiz.slug %}">{{quiz.title}} </a></td>
-            <td><a href="#"><i class="material-icons">people</i> <span>{{quiz.report_set.count}}</span></a></td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
+  <div class="w3-container w3-padding-48 w3-half">
+    <div class="w3-center">
+    <img class="w3-padding w3-centered" style="width: 80%;" src="https://cdn.pixabay.com/photo/2016/05/30/14/46/man-1424877_960_720.png">
     </div>
-    {% else %}
-    <h1>OOPs You are on the wrong page</h1>
-    {% endif %}
+      <p>Total Questions : <span id="ques_cnt">{{quiz.question_set.count}}<span></p>
+
+      {% if quiz.question_set.count >= 50 %}
+      <p class="w3-red"><span>MAX QUES LIMIT</span></p>
+      {% else %}
+      <a id="addQuestionBtn" onclick="showAddQuestionBox()" class="w3-button w3-round-large w3-blue w3-bar w3-margin-bottom" href="javascript:void(0);">Add Question</a>
+      <a id="cancelQuestionBtn" onclick="showAddQuestionBox()" class="w3-button w3-round-large w3-red w3-bar w3-margin-bottom" href="javascript:void(0);" style="display:none">Cancel</a>
+      <form autocomplete="off" style="display:none" class="w3-container w3-round-large w3-border w3-margin-bottom w3-padding" method="POST" id="post-form">
+        {% csrf_token %}
+        <input required type="text" class="w3-input w3-round" id="question" placeholder="Question"></input>
+        <input required type="text" class="w3-input w3-round" id="a" placeholder="A"></input>
+        <input required type="text" class="w3-input w3-round" id="b" placeholder="B"></input>
+        <input required type="text" class="w3-input w3-round" id="c" placeholder="C"></input>
+        <input required type="text" class="w3-input w3-round" id="d" placeholder="D"></input>
+        <input required type="text" class="w3-input w3-round" id="answer" placeholder="Answer"></input>
+        <input required type="number" class="w3-input w3-round w3-half" id="mark" placeholder="marks"></input>
+        <input required type="number" class="w3-input w3-round w3-half" id="neg" placeholder="negative"></input>
+        <input class="w3-button w3-round w3-right w3-section w3-blue w3-padding" type="submit" value="Create">
+      </form>
+      <div id="results"></div>
+      {% endif %}
+      
+    <div id="ques_list"></div>
+      {% for question in questions %}
+      <div class="w3-container w3-round-large w3-border w3-text-white">
+        <p>Q.  {{question.question}}</p>
+        <hr>
+        <div {% if question.answer == question.option1%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>A. {{question.option1}}</div>
+        <div {% if question.answer == question.option2%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>B. {{question.option2}}</div>
+        <div {% if question.answer == question.option3%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>C. {{question.option3}}</div>
+        <div {% if question.answer == question.option4%} class="w3-text-green" style="border: 2px solid #4CAF50; border-radius: 5px;"{%endif%}>D. {{question.option4}}</div>
+        <br>
+        <strong><a class="w3-text-green w3-left" href="{% url 'quiz:question_update' question.id %}">Edit</a></strong>
+        <strong><a class="w3-text-deep-orange w3-right" href="{% url 'quiz:question_delete' question.id %}">Delete</a></strong>
+      </div>
+      <br>
+      {% endfor %}
+      <br>
+    <input class="w3-input w3-round" type="text" value="qrious23.herokuapp.com{% url 'quiz:exam' slug=slug %}" id="myInput">
+  <div class="tooltip">
+  <button class="w3-button w3-blue w3-round w3-right" onclick="copy()" onmouseout="outFunc()">
+    <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
+    Copy text
+    </button>
+  </div>
+  </div>
+
+  <div class="w3-container w3-center w3-padding-48 w3-half">
+    <div class="leaderboard" style="display:flex; align-items:center; justify-content:start">
+      <img class="w3-padding" style="width: 25%;" src="https://cdn.pixabay.com/photo/2022/06/10/11/54/win-7254378__340.png" alt="">
+      <p style="font-size:1.8em">Leaderboard</p>
+    </div>
+    <table>
+      <tr>
+        <th>PARTICIPANT</th>
+        <th>SCORE</th>
+        <th>RESPONSE</th>
+      </tr>
+      {% for report in reports %}
+      <tr>
+        <td>{{report.student}} <span class="w3-badge w3-white">{{report.attempt}}</span></td>
+        <td>{{report.score}}</td>
+        <td><a href="{% url 'quiz:responses' slug=slug userid=report.student.id %}">Response </a></td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <img class="w3-margin" style="width: 60%;" src="https://cdn.pixabay.com/photo/2016/06/13/15/07/presentation-1454403__340.png" alt="">
+
+    <table>
+      <tr><th>MY QUIZ</th><th>RESULT</th></tr>
+      {% for quiz in my_quizes %}
+      <tr>
+        <td><a href="{% url 'quiz:question_list' slug=quiz.slug %}">{{quiz.title}} </a></td>
+        <td><a href="#"><i class="material-icons">people</i> <span>{{quiz.report_set.count}}</span></a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+{% else %}
+<h1>OOPs You are on the wrong page</h1>
+{% endif %}
+<script>
+  $(document).ready(function(){
+    $('#post-form').on('submit', function(event){
+        event.preventDefault();
+        console.log("form submitted!")
+        create_question();
+    });
+    });
+    function create_question() {
+    console.log("create post is working!")
+    $.ajax({
+        url : "/create_question",
+        type : "POST",
+        data : { 
+            question : $('#question').val(), 
+            a : $('#a').val(), 
+            b : $('#b').val(), 
+            c : $('#c').val(), 
+            d : $('#d').val(), 
+            answer : $('#answer').val(),
+            mark : $('#mark').val(), 
+            neg : $('#neg').val(),
+            slug : "{{slug}}",
+        },
+        success : function(json) {
+            $('#question').val('');
+            $('#a').val('');
+            $('#b').val('');
+            $('#c').val('');
+            $('#d').val('');
+            $('#answer').val('');
+            $('#mark').val('');
+            $('#neg').val('');
+            $('#ques_cnt').html(parseInt($('#ques_cnt').html())+1);
+            console.log(json.question);
+            console.log("success");
+            $("#ques_list").prepend(new_ques(json));
+            $('#results').html("<div class='w3-border w3-round w3-margin w3-padding w3-text-green'>"+json.status);
+        },
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='w3-border w3-round w3-margin w3-padding w3-text-red'>Oops! We have encountered an error: "+errmsg);
+            console.log(xhr.status + ": " + xhr.responseText);
+        }
+    });
+    };
+    function new_ques(json){
+      var question_box = "<div "+ "class='w3-container w3-round-large w3-border w3-text-white'" + ">" + "<p>Q. " + json['question'] + "</p><hr>" + "<div ";
+        if(json['answer'] == json['a']) question_box += "class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
+        question_box+=" >A." + json['a'] + "</div>" + "<div ";
+        if(json['answer'] == json['b']) question_box+="class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
+        question_box+= " >B." + json['b'] + "</div>"+"<div ";
+        if(json['answer'] == json['c']) question_box+="class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
+        question_box += " >C." + json['c'] + "</div>" + "<div ";
+        if(json['answer'] == json['d']) question_box+="class='w3-text-green' style='border: 2px solid #4CAF50; border-radius: 5px;'";
+        question_box+= " >D." + json['d'] + "</div>" + "<br>"+ "<strong><a class='w3-text-green w3-left' href= " + "#" + ">Edit</a></strong>" + "<strong><a class='w3-text-deep-orange w3-right' href=" + "#" + ">Delete</a></strong> </div><br>"
+      return question_box;
+    }
+    $(function() {
+      function getCookie(name) {
+          var cookieValue = null;
+          if (document.cookie && document.cookie != '') {
+              var cookies = document.cookie.split(';');
+              for (var i = 0; i < cookies.length; i++) {
+                  var cookie = jQuery.trim(cookies[i]);
+                  if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                      cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                      break;
+                  }
+              }
+          }
+          return cookieValue;
+      }
+      var csrftoken = getCookie('csrftoken');
+  
+      function csrfSafeMethod(method) {
+          return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      function sameOrigin(url) {
+          var host = document.location.host; // host + port
+          var protocol = document.location.protocol;
+          var sr_origin = '//' + host;
+          var origin = protocol + sr_origin;
+          return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+              (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+              !(/^(\/\/|http:|https:).*/.test(url));
+      }
+  
+      $.ajaxSetup({
+          beforeSend: function(xhr, settings) {
+              if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+                  xhr.setRequestHeader("X-CSRFToken", csrftoken);
+              }
+          }
+      });
+  });
+  function showAddQuestionBox(){
+    $('#post-form').toggle();
+    $('#addQuestionBtn').toggle();
+    $('#cancelQuestionBtn').toggle();
+  }
+</script>
 {% endblock %}
