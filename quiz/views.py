@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, HttpResponse
 from .models import Question, Quiz, Report, Response
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -6,6 +6,48 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from .forms import QuestionForm
+import json
+
+@login_required(login_url='/auth')
+def create_question(request):
+    if request.method == 'POST':
+        print("hi")
+        slug = request.POST.get('slug')
+        quiz = Quiz.objects.filter(slug=slug)[0]
+        print(quiz)
+        question = request.POST.get('question')
+        a = request.POST.get('a')
+        b = request.POST.get('b')
+        c = request.POST.get('c')
+        d = request.POST.get('d')
+        answer = request.POST.get('answer')
+        marks = int(request.POST.get('mark'))
+        neg = int(request.POST.get('neg'))
+        if neg > 0:
+            neg = neg*-1
+        response_data = {}
+        print(marks, neg)
+        question = Question(quiz=quiz, question=question, option1 = a, option2 = b, option3 = c, option4=d, answer=answer, marks=marks, negative=neg)
+        question.save()
+        response_data['status'] = 'Sucess : question added!'
+        response_data['question'] = question.question
+        response_data['id'] = question.id
+        response_data['a'] = question.option1
+        response_data['b'] = question.option2
+        response_data['c'] = question.option3
+        response_data['d'] = question.option4
+        response_data['answer'] = question.answer
+        response_data['marks'] = question.marks
+        response_data['negative'] = question.negative
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type="application/json"
+        )
+    else:
+        return HttpResponse(
+            json.dumps({"nothing to see": "this isn't happening"}),
+            content_type="application/json"
+        )
 
 @login_required(login_url='/auth')
 def home(request):
