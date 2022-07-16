@@ -1,0 +1,12 @@
+{% extends "quiz/base.html" %}
+{% block title %} Update | Question {% endblock %}
+{% block content %}
+<div class="modal-form">
+  <form class="w3-container w3-round-large w3-border w3-text-blue w3-margin" action="" method="post">
+    <h2 class="w3-text-light-grey w3-round w3-center">Update</h3>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="w3-button w3-round w3-right w3-section w3-blue w3-padding" type="submit" value="Update">
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'quiz/base.html' %}
+{% block title %} Records | {{student}} {% endblock %}
+{% block content %}
+
+<div class="w3-container w3-padding">
+<table>
+  <caption class="w3-centre">Response-sheet - {{student}}</caption>
+  <tr>
+    <th>QUESTION</th>
+    <th>RESPONSE</th>
+    <th>STATUS</th>
+  </tr>
+  {% for res in response %}
+  <tr>
+    <td>{{res.question}}</td>
+    <td>{{res.answer}}</td>
+    {% if res.is_correct %}
+    <td>Correct <span class="w3-badge w3-green">{{res.attempt}}</span></td>
+    {% else %}
+    <td>Incorrect <span class="w3-badge w3-red">{{res.attempt}}</span></td>
+    {% endif %}
+  </tr>
+  {% endfor %}
+</table>
+</div>
+
+{% endblock %}
