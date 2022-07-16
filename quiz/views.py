@@ -154,3 +154,8 @@ class QuestionDelete(LoginRequiredMixin, DeleteView):
     model = Question
     fields = '__all__'
     success_url = reverse_lazy('home')
+
+class QuizDelete(LoginRequiredMixin, DeleteView):
+    model = Quiz
+    fields = '__all__'
+    success_url = reverse_lazy('home')
