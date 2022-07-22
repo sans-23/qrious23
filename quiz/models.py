@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 from django.template.defaultfilters import slugify
+from cloudinary.models import CloudinaryField
 
 class Quiz(models.Model):
     title = models.CharField(max_length=100, unique=True)
@@ -29,6 +30,7 @@ class Question(models.Model):
     answer = models.CharField(max_length=200)
     marks = models.IntegerField(default=0)
     negative = models.IntegerField(default=0)
+    image = CloudinaryField('image', blank=True, null=True)
 
     def __str__(self):
         return self.question

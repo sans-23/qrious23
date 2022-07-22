@@ -124,35 +124,26 @@ label > input[type="radio"] + *::before {
     border-width: 0.11rem;
     border-color: gray;
 }
-label > input[type="radio"]:checked + *::before {
-    background: radial-gradient(blue 0%, blue 40%, transparent 50%, transparent);
-    border-color: blue;
+input[type="radio"]:checked + *::before {
+    background: radial-gradient(#2196F3 0%, blue 40%, transparent 50%, transparent);
+    border-color: #2196F3;
 }
-label > input[type="radio"]:checked + * {
-    color: blue;
+input[type="radio"]:checked + label {
+    background: #2196F3;
+    color:white;
 }
 
-input[type=text], textarea {
-    width: 100%;
-    padding: 10px 15px;
-    margin: 5px 0;
-    box-sizing: border-box;
+label {
+    height: 100%;
+    display: block;
     background: none;
-    color:white;
- }
- input[type=text]:focus, input[type=number]:focus {
-   outline: none;
- }
+    border: 2px solid #2196F3;
+    border-radius: 20px;
+    padding: 0.5rem;
+    position: relative;
+}
  input::-webkit-outer-spin-button,
  input::-webkit-inner-spin-button {
    -webkit-appearance: none;
    margin: 0;
  }
- input[type=number] {
-   width: 35%;
-   padding: 10px 15px;
-   margin: 5px 0;
-   box-sizing: border-box;
-   background: none;
-   color:white
-}

@@ -1,5 +1,8 @@
 from pathlib import Path
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-kk*lodsfg0nqb91@tna1@r)jms!!lc(cr++u#wrf4@+i$dt&r_'
@@ -17,7 +20,8 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
 
     'quiz',
-    'accounts'
+    'accounts',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +66,12 @@ DATABASES = {
     }
 }
 
+cloudinary.config( 
+  cloud_name = "sans23", 
+  api_key = "798469769742926", 
+  api_secret = "R-ix5W9cKZktyVeFuw-MWXA1DUE" 
+)
+
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
@@ -97,3 +107,4 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

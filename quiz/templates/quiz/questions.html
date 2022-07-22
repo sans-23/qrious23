@@ -16,15 +16,15 @@
       <a id="cancelQuestionBtn" onclick="showAddQuestionBox()" class="w3-button w3-round-large w3-deep-orange w3-bar w3-margin-bottom" href="javascript:void(0);" style="display:none">Cancel</a>
       <form autocomplete="off" style="display:none" class="w3-container w3-round-large w3-border w3-margin-bottom w3-padding" method="POST" id="post-form">
         {% csrf_token %}
-        <input required type="text" class="w3-input w3-round" id="question" placeholder="Question"></input>
-        <input required type="text" class="w3-input w3-round" id="a" placeholder="A"></input>
-        <input required type="text" class="w3-input w3-round" id="b" placeholder="B"></input>
-        <input required type="text" class="w3-input w3-round" id="c" placeholder="C"></input>
-        <input required type="text" class="w3-input w3-round" id="d" placeholder="D"></input>
-        <input required type="text" class="w3-input w3-round" id="answer" placeholder="Answer"></input>
-        <input required type="number" class="w3-input w3-round w3-half" id="mark" placeholder="marks"></input>
-        <input required type="number" class="w3-input w3-round w3-half" id="neg" placeholder="negative"></input>
-        <input class="w3-button w3-round w3-right w3-section w3-blue w3-padding" type="submit" value="Create">
+        <p><input required type="text" class="w3-input w3-round" id="question" placeholder="Question"></input></p>
+        <p><input required type="text" class="w3-input w3-round" id="a" placeholder="A"></input></p>
+        <p><input required type="text" class="w3-input w3-round" id="b" placeholder="B"></input></p>
+        <p><input required type="text" class="w3-input w3-round" id="c" placeholder="C"></input></p>
+        <p><input required type="text" class="w3-input w3-round" id="d" placeholder="D"></input></p>
+        <p><input required type="text" class="w3-input w3-round" id="answer" placeholder="Answer"></input></p>
+        <p><input required type="number" class="w3-input w3-round w3-half" id="mark" placeholder="marks"></input></p>
+        <p><input required type="number" class="w3-input w3-round w3-half" id="neg" placeholder="negative"></input></p>
+        <p><input class="w3-button w3-round w3-right w3-section w3-blue w3-padding" type="submit" value="Create"></p>
       </form>
       <div id="results"></div>
       {% endif %}
@@ -45,7 +45,7 @@
       <br>
       {% endfor %}
       <br>
-    <input class="w3-input w3-round" type="text" value="qrious23.herokuapp.com{% url 'quiz:exam' slug=slug %}" id="myInput">
+    <input class="w3-input w3-round w3-text-white" type="text" value="qrious23.herokuapp.com{% url 'quiz:exam' slug=slug %}" id="myInput">
   <div class="tooltip">
   <button class="w3-button w3-blue w3-round w3-right" onclick="copy()" onmouseout="outFunc()">
     <span class="tooltiptext" id="myTooltip">Copy to clipboard</span>
@@ -81,6 +81,24 @@
 {% else %}
 <h1>OOPs You are on the wrong page</h1>
 {% endif %}
+<style>
+  input[type=text], textarea {
+    width: 100%;
+    padding: 10px 15px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    background: none;
+    color:;
+ }
+ input[type=number] {
+  width: 35%;
+  padding: 10px 15px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  background: none;
+  color:white
+}
+</style>
 <script>
   $(document).ready(function(){
     $('#post-form').on('submit', function(event){

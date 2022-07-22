@@ -3,18 +3,22 @@
 {% block content %}
 
 {% if questions %}
-<div class="w3-half">
+<div class="w3-container w3-half padding-64">
+  <p>Total Questions : {{quiz.question_set.count}}</p>
       <form action="{% url 'quiz:exam' slug=slug%}" method="post">
             {% for question in questions %}
             {% csrf_token %}
             <div class="w3-container w3-padding w3-round-large w3-border w3-text-white w3-margin-top">
               <div> 
-                    <b><p class="w3-large">Q. {{question.question}}</p></b>
+                    <b><p class="w3-large">Q{{ forloop.counter }}.&nbsp;&nbsp;&nbsp;{{question.question}}</p></b>
                     <div style="display:flex; justify-content:space-between;">
                       <span class="w3-small w3-text-green w3-left"><b>Marks : {{question.marks }}</b></span>   
                       <span class="w3-small w3-text-deep-orange w3-right"><b>Negative : {{question.negative}}</b></span>
                     </div>
               </div>
+              {%if question.image.url%}
+              <img src="{{question.image.url}}" class="w3-image" />
+              {%endif%}
               <hr>
               
               <label>
@@ -45,13 +49,11 @@
           </form>
 </div>
 
-<div class="w3-container w3-half">
-      {% if reports %}
-      <div class="leaderboard" style="display:flex; align-items:center; justify-content:start">
-        <img class="w3-padding" style="width: 25%;" src="https://cdn.pixabay.com/photo/2022/06/10/11/54/win-7254378__340.png" alt="">
+<div class="w3-container w3-padding-64 w3-half">
+      <div class="leaderboard" style="display:flex; align-items:center; justify-content:start; height:65px">
+        <img class="w3-padding" style="height:100%;" src="https://cdn.pixabay.com/photo/2022/06/10/11/54/win-7254378__340.png" alt="">
         <p style="font-size:1.8em">Leaderboard</p>
       </div>
-
     <table>
       <tr>
         <th>Participant</th>
@@ -64,20 +66,6 @@
       </tr>
       {% endfor %}
     </table>
-  
-    {% else %}
-  
-    <div class="leaderboard" style="display:flex; align-items:center; justify-content:start">
-      <img class="w3-padding" style="width: 25%;" src="https://cdn.pixabay.com/photo/2022/06/10/11/54/win-7254378__340.png" alt="">
-      <p style="font-size:1.8em">Leaderboard</p>
-    </div>
-    <table>
-      <tr>
-        <th>Participant</th>
-        <th>SCORE</th>
-      </tr>
-    </table>
-    {% endif %}
 </div>
 
 {% else %}

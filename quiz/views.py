@@ -122,7 +122,7 @@ def exam_view(request, slug):
 
     else:
         reports = Report.objects.filter(quiz=quiz)
-        return render(request, 'quiz/exam.html', {'questions': questions, 'slug':slug, 'reports': reports})
+        return render(request, 'quiz/exam.html', {'questions': questions, 'slug':slug, 'reports': reports, 'quiz':quiz})
 
 class QuestionCreate(LoginRequiredMixin, CreateView):
     model = Question
