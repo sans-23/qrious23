@@ -147,3 +147,14 @@ label {
    -webkit-appearance: none;
    margin: 0;
  }
+
+.diagram-img{
+    display: flex;
+    justify-content: center;
+    height: 300px;
+    object-fit: contain;
+}
+
+.diagram-img > img{
+    height: 100%;
+}
