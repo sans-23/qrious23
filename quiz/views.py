@@ -11,10 +11,8 @@ import json
 @login_required(login_url='/auth')
 def create_question(request):
     if request.method == 'POST':
-        print("hi")
         slug = request.POST.get('slug')
         quiz = Quiz.objects.filter(slug=slug)[0]
-        print(quiz)
         question = request.POST.get('question')
         a = request.POST.get('a')
         b = request.POST.get('b')
@@ -26,7 +24,6 @@ def create_question(request):
         if neg > 0:
             neg = neg*-1
         response_data = {}
-        print(marks, neg)
         question = Question(quiz=quiz, question=question, option1 = a, option2 = b, option3 = c, option4=d, answer=answer, marks=marks, negative=neg)
         question.save()
         response_data['status'] = 'Sucess : question added!'
