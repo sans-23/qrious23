@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from .forms import QuestionForm
 import json
+from django.db.models import Q
 
 @login_required(login_url='/auth')
 def create_question(request):
@@ -48,19 +49,22 @@ def create_question(request):
 
 @login_required(login_url='/auth')
 def home(request):
+    # Search Implementation
+    q = request.GET.get('q') if request.GET.get('q')!=None else ''
+    quizes = Quiz.objects.filter(
+        Q(title__icontains=q) | Q(author__username__icontains=q)
+        )
+    quiz_count = quizes.count()
+    my_quizes = Quiz.objects.filter(author=request.user)
+    reports = Report.objects.filter(student=request.user)
+    # Quiz Creation 
     if request.method == 'POST':
         title = request.POST.get('title')
         quiz = Quiz(title=title, author=request.user)
         quiz.save()
-        quizes = Quiz.objects.all()
-        my_quizes = Quiz.objects.filter(author=request.user)
-        reports = Report.objects.filter(student=request.user)
         return redirect('home')
     
-    quizes = Quiz.objects.all()
-    my_quizes = Quiz.objects.filter(author=request.user)
-    reports = Report.objects.filter(student=request.user)
-    return render(request, 'quiz/home.html', {'quizes': quizes, 'my_quizes': my_quizes, 'reports':reports})
+    return render(request, 'quiz/home.html', {'quizes': quizes, 'quiz_count': quiz_count, 'my_quizes': my_quizes, 'reports':reports})
 
 @login_required(login_url='/auth')
 def question_list(request, slug):
